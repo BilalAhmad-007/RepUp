@@ -15,7 +15,7 @@ import java.util.List;
 public interface WorkoutDao {
     // Insert a new workout
     @Insert
-    void insertWorkout(Workout workout);
+    long insertWorkout(Workout workout);
 
     @Insert
     void insertExercise(Exercise exercise);

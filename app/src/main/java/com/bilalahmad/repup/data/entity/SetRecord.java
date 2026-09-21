@@ -30,7 +30,7 @@ public class SetRecord {
     private int exerciseOwnerId;
 
     // Constructor
-    public SetRecord(double weight, int setNumber, int reps, int workoutOwnerId, int exerciseOwnerId) {
+    public SetRecord(int workoutOwnerId, int exerciseOwnerId, int setNumber, double weight, int reps) {
         this.weight = weight;
         this.setNumber = setNumber;
         this.reps = reps;
