@@ -33,5 +33,8 @@ public interface WorkoutDao {
    LiveData<List<SetRecord>> getSetsForWorkout(int workoutId);
 
    @Query("SELECT MAX(weight) FROM set_records WHERE exerciseOwnerId = :exerciseId")
-    LiveData<Double> getMaxWeightForExercise(int exerciseId);
+   LiveData<Double> getMaxWeightForExercise(int exerciseId);
+
+   @Query("SELECT MAX(weight) FROM set_records WHERE exerciseOwnerId = :exerciseId")
+   Double getMaxWeightForExerciseSync(int exerciseId);
 }

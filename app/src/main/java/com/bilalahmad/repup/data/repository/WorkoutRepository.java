@@ -55,4 +55,29 @@ public class WorkoutRepository {
       void onWorkoutInserted(int workoutId);
   }
 
+  public interface OnPRCheckListener {
+        void onPRResult(boolean isNewPR, double previousMaxWeight, double newWeight);
+  }
+
+    public void checkAndLogSet(SetRecord setRecord, OnPRCheckListener listener) {
+        executorService.execute(() -> {
+            Double previousMax = workoutDao.getMaxWeightForExerciseSync(setRecord.getExerciseOwnerId());
+
+            // Insert new set record into Room
+            workoutDao.insertSetRecord(setRecord);
+
+            double currentMax = previousMax != null ? previousMax : 0.0;
+
+
+            if (setRecord.getWeight() > currentMax) {
+                if (listener != null) {
+                    listener.onPRResult(true, currentMax, setRecord.getWeight());
+                }
+            } else {
+                if (listener != null) {
+                    listener.onPRResult(false, currentMax, setRecord.getWeight());
+                }
+            }
+        });
+    }
 }
