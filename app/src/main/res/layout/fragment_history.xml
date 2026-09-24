@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
-    android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/tvHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Workout History"
@@ -18,6 +18,19 @@
         android:id="@+id/rvWorkoutHistory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/tvHeader"
         android:layout_marginTop="16dp" />
 
-</LinearLayout>
+    <!-- Empty State Text -->
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No workouts logged yet.\nStart logging from the Workout tab!"
+        android:textAlignment="center"
+        android:textColor="@color/repup_text_secondary"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+</RelativeLayout>
