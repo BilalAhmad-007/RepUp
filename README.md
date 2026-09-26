@@ -8,3 +8,4 @@
 * **Database:** Room Persistence Library (SQLite)
 * **Architecture:** MVVM (Model-View-ViewModel) + LiveData
 * **Visualization:** MPAndroidChart
+* **Authentication:** Firebase 
