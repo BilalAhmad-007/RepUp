@@ -1,19 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Base application theme. -->
-    <style name="Base.Theme.RepUp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Brand Colors -->
-        <item name="colorPrimary">@color/repup_primary</item>
-        <item name="colorSecondary">@color/repup_secondary</item>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.RepUp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary Brand Color -->
+        <item name="colorPrimary">@color/primary_orange</item>
+        <item name="colorOnPrimary">@color/text_light</item>
 
-        <!-- Canvas & Card Backgrounds -->
-        <item name="android:colorBackground">@color/repup_background</item>
-        <item name="colorSurface">@color/repup_surface</item>
+        <!-- App Background -->
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="colorSurface">@color/card_background</item>
 
-        <!-- Text Colors -->
-        <item name="colorOnBackground">@color/repup_text_primary</item>
-        <item name="colorOnSurface">@color/repup_text_primary</item>
+        <!-- Status Bar Configuration -->
+        <item name="android:statusBarColor">@color/app_background</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
-
-    <style name="Theme.RepUp" parent="Base.Theme.RepUp" />
 </resources>
