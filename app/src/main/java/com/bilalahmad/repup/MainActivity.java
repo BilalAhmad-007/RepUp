@@ -1,6 +1,7 @@
 package com.bilalahmad.repup;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,34 +27,43 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        if (savedInstanceState == null) {
-            loadFragment(new ActiveWorkoutFragment());
-        }
+        setUpClickListeners();
+        setUpBottomNavigation();
 
+    }
+
+    private void setUpClickListeners() {
+        binding.btnStartWorkout.setOnClickListener(v -> {
+            Toast.makeText(this, "Starting Push Day Workout...", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to Workout Execution Screen
+        });
+        binding.btnCustomizePlan.setOnClickListener(v -> {
+            Toast.makeText(this, "Customize Plan Button Clicked", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to Customize Plan Screen
+        });
+        binding.btnNotification.setOnClickListener(v -> {
+            Toast.makeText(this, "Notification Button Clicked", Toast.LENGTH_SHORT).show();
+            // TODO: Navigate to Notification Screen
+        });
+    }
+
+    private void setUpBottomNavigation(){
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
-            Fragment selectedFragment = null;
+
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_workout) {
-                selectedFragment = new ActiveWorkoutFragment();
+            if (itemId == R.id.nav_home) {
+                return true;
             } else if (itemId == R.id.nav_history) {
-                selectedFragment = new HistoryFragment();
-            } else if (itemId == R.id.nav_calculator) {
-                selectedFragment = new BmiCalculatorFragment();
-            }
-
-            if (selectedFragment != null) {
-                loadFragment(selectedFragment);
+                Toast.makeText(this, "History Tab Selected", Toast.LENGTH_SHORT).show();
+                return true;
+            } else if (itemId == R.id.nav_metrics) {
+                Toast.makeText(this, "Metrics Tab Selected", Toast.LENGTH_SHORT).show();
                 return true;
             }
             return false;
         });
     }
 
-    private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
-    }
+
 }
