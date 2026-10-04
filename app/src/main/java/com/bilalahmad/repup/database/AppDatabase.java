@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {WorkoutSession.class}, version = 1, exportSchema = false)
+@Database(entities = {WorkoutSession.class}, version = 2, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract WorkoutDao workoutDao();
     private static volatile AppDatabase INSTANCE;
@@ -25,7 +25,9 @@ public abstract class AppDatabase extends RoomDatabase {
                             context.getApplicationContext(),
                             AppDatabase.class,
                             "repup_database"
-                    ).build();
+                    )
+                    .fallbackToDestructiveMigration(true)
+                    .build();
                 }
             }
         }

@@ -13,6 +13,7 @@
     <!-- Typography / Text Colors -->
     <color name="text_dark">#121212</color>
     <color name="text_muted">#7A7A70</color>
+    <color name="repup_text_secondary">#7A7A70</color>
     <color name="text_light">#FFFFFF</color>
     <color name="text_subdued">#9E9E94</color>
 

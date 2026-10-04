@@ -1055,7 +1055,7 @@
             app:itemIconTint="@color/primary_orange"
             app:itemTextColor="@color/primary_orange"
             app:menu="@menu/bottom_nav_menu"
-            app:layout_bottomToBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
