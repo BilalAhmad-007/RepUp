@@ -183,7 +183,7 @@
                                 android:paddingHorizontal="10dp"
                                 android:paddingVertical="4dp"
                                 android:text="6 exercises"
-                                android:textColor="@color/text_light"
+                                android:textColor="@color/text_dark"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -194,7 +194,7 @@
                                 android:paddingHorizontal="10dp"
                                 android:paddingVertical="4dp"
                                 android:text="48–55 min"
-                                android:textColor="@color/text_light"
+                                android:textColor="@color/text_dark"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -204,7 +204,7 @@
                                 android:paddingHorizontal="10dp"
                                 android:paddingVertical="4dp"
                                 android:text="Intermediate"
-                                android:textColor="@color/text_light"
+                                android:textColor="@color/text_dark"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
