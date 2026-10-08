@@ -53,7 +53,7 @@
                 android:layout_weight="1"
                 app:cardBackgroundColor="@color/card_background"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
+                app:cardElevation="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -96,7 +96,7 @@
                 android:layout_weight="1"
                 app:cardBackgroundColor="@color/card_background"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
+                app:cardElevation="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -139,7 +139,7 @@
                 android:layout_weight="1"
                 app:cardBackgroundColor="@color/card_background"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
+                app:cardElevation="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -192,7 +192,7 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
-            <Spinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spinner_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -246,12 +246,15 @@
                 android:textColor="@color/text_muted"
                 android:textSize="13sp" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_go_to_plan"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="52dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_outline_button"
+                android:backgroundTint="@color/card_background"
+                app:strokeWidth="0.7dp"
+                app:strokeColor="@color/text_muted"
+                app:cornerRadius="10dp"
                 android:textAllCaps="false"
                 android:text="Go to my plan  →"
                 android:textColor="@color/text_dark"

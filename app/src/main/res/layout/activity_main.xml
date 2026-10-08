@@ -11,10 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/app_background"
-
         >
 
-        <!-- SECTION 1: HEADER BAR -->
+        <!--HEADER BAR -->
         <RelativeLayout
             android:id="@+id/fixed_header_bar"
             android:layout_width="0dp"
@@ -82,8 +81,8 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <ScrollView
-            android:id="@+id/main_scroll_view"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/main_home_content"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:clipToPadding="false"
@@ -138,7 +137,7 @@
                     android:textColor="@color/text_dark"
                     android:textSize="14sp" />
 
-                <!-- SECTION 2: TODAY'S FOCUS HERO CARD -->
+                <!-- TODAY'S FOCUS HERO CARD -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -254,7 +253,6 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- SECTION 3: YOUR MOMENTUM CARD -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -443,7 +441,7 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- SECTION 4: YOUR WEEKLY RHYTHM -->
+                <!--WEEKLY RHYTHM -->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -508,7 +506,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <!-- MONDAY CARD (SELECTED STATE) -->
+                        <!-- SELECTED STATE-->
                         <LinearLayout
                             android:layout_width="140dp"
                             android:layout_height="wrap_content"
@@ -595,7 +593,7 @@
                             </RelativeLayout>
                         </LinearLayout>
 
-                        <!-- TUESDAY CARD -->
+
                         <LinearLayout
                             android:layout_width="140dp"
                             android:layout_height="wrap_content"
@@ -663,7 +661,6 @@
                                 android:textSize="10sp" />
                         </LinearLayout>
 
-                        <!-- WEDNESDAY CARD -->
                         <LinearLayout
                             android:layout_width="140dp"
                             android:layout_height="wrap_content"
@@ -719,7 +716,7 @@
                                 android:textSize="10sp" />
                         </LinearLayout>
 
-                        <!-- THURSDAY CARD -->
+
                         <LinearLayout
                             android:layout_width="140dp"
                             android:layout_height="wrap_content"
@@ -777,7 +774,7 @@
                     </LinearLayout>
                 </HorizontalScrollView>
 
-                <!-- SECTION 5: A PLAN FOR YOUR PACE -->
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -795,7 +792,7 @@
                     android:textColor="@color/text_muted"
                     android:textSize="13sp" />
 
-                <!-- PLAN CARD 1 (ACTIVE PLAN) -->
+                <!-- PLAN CARD 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -874,7 +871,7 @@
                     </RelativeLayout>
                 </LinearLayout>
 
-                <!-- PLAN CARD 2 (FULL BODY) -->
+                <!-- PLAN CARD 2 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -952,7 +949,7 @@
                     </RelativeLayout>
                 </LinearLayout>
 
-                <!-- PLAN CARD 3 (UPPER / LOWER SPLIT) -->
+                <!-- PLAN CARD 3 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -1054,7 +1051,18 @@
                 </LinearLayout>
 
             </LinearLayout>
-        </ScrollView>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/fixed_header_bar"
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- BOTTOM NAVIGATION BAR -->
         <com.google.android.material.bottomnavigation.BottomNavigationView

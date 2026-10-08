@@ -1,6 +1,7 @@
 package com.bilalahmad.repup;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 
@@ -8,9 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.bilalahmad.repup.database.WorkoutSession;
 import com.bilalahmad.repup.databinding.ActivityMainBinding;
+import com.bilalahmad.repup.ui.HistoryFragment;
 import com.bilalahmad.repup.viewmodel.MainViewModel;
 
 
@@ -88,9 +91,13 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
+                binding.mainHomeContent.setVisibility(View.VISIBLE);
+                binding.fragmentContainer.setVisibility(View.GONE);
                 return true;
             } else if (itemId == R.id.nav_history) {
-                Toast.makeText(this, "History Tab Selected", Toast.LENGTH_SHORT).show();
+                binding.mainHomeContent.setVisibility(View.GONE);
+                binding.fragmentContainer.setVisibility(View.VISIBLE);
+                loadFragment(new HistoryFragment());
                 return true;
             } else if (itemId == R.id.nav_metrics) {
                 Toast.makeText(this, "Metrics Tab Selected", Toast.LENGTH_SHORT).show();
@@ -98,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 
 
