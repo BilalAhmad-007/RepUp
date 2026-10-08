@@ -11,5 +11,9 @@
         <!-- Status Bar Configuration -->
         <item name="android:statusBarColor">@color/app_background</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <!-- font -->
+        <item name="fontFamily">@font/font_roboto</item>
+        <item name="android:fontFamily">@font/font_roboto</item>
     </style>
 </resources>
