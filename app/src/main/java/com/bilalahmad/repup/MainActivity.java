@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bilalahmad.repup.database.WorkoutSession;
 import com.bilalahmad.repup.databinding.ActivityMainBinding;
 import com.bilalahmad.repup.ui.HistoryFragment;
+import com.bilalahmad.repup.ui.MetricsFragment;
 import com.bilalahmad.repup.viewmodel.MainViewModel;
 
 
@@ -101,7 +102,9 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment(new HistoryFragment());
                 return true;
             } else if (itemId == R.id.nav_metrics) {
-                Toast.makeText(this, "Metrics Tab Selected", Toast.LENGTH_SHORT).show();
+                binding.mainHomeContent.setVisibility(View.GONE);
+                binding.fragmentContainer.setVisibility(View.VISIBLE);
+                loadFragment(new MetricsFragment());
                 return true;
             }
             return false;
