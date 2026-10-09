@@ -1,0 +1,20 @@
+<resources>
+    <!-- Selected Item Text Style (Bold + Poppins) -->
+    <style name="BottomNavActiveText">
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/font_poppins</item>
+        <item name="android:fontFamily">@font/font_poppins</item>
+    </style>
+
+    <!-- Unselected Item Text Style (Regular + Roboto) -->
+    <style name="BottomNavInactiveText">
+        <item name="android:textSize">10sp</item>
+        <item name="fontFamily">@font/font_roboto</item>
+        <item name="android:fontFamily">@font/font_roboto</item>
+    </style>
+
+    <style name="OrangeRippleBottomNav" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemBackground">?attr/selectableItemBackground</item>
+        <item name="itemRippleColor">#6DFF7203</item>
+    </style>
+</resources>

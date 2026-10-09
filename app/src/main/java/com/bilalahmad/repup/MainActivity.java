@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigation(){
+
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
 
             int itemId = item.getItemId();
