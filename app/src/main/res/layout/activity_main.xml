@@ -352,7 +352,7 @@
                                     android:layout_marginTop="6dp"
                                     android:text="Workouts completed"
                                     android:textColor="@color/text_muted"
-                                    android:textSize="11sp" />
+                                    android:textSize="10sp" />
                             </LinearLayout>
 
                             <View
@@ -388,7 +388,7 @@
                                     android:layout_marginTop="4dp"
                                     android:text="Current streak"
                                     android:textColor="@color/text_muted"
-                                    android:textSize="11sp" />
+                                    android:textSize="10sp" />
                             </LinearLayout>
 
                             <View
@@ -424,7 +424,7 @@
                                     android:layout_marginTop="4dp"
                                     android:text="Time invested"
                                     android:textColor="@color/text_muted"
-                                    android:textSize="11sp" />
+                                    android:textSize="10sp" />
                             </LinearLayout>
                         </LinearLayout>
 
@@ -846,7 +846,7 @@
                         android:layout_marginTop="6dp"
                         android:text="A classic split. Serious strength. One muscle group at a time."
                         android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
+                        android:textSize="12sp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -924,7 +924,7 @@
                         android:layout_marginTop="6dp"
                         android:text="Build a strong base with balanced, full-body sessions."
                         android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
+                        android:textSize="12sp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -1002,7 +1002,7 @@
                         android:layout_marginTop="6dp"
                         android:text="Train smarter with a balanced upper and lower body split."
                         android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
+                        android:textSize="12sp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -1051,6 +1051,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="Progress isn't always loud. Sometimes it's just showing up."
+
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
                 </LinearLayout>
