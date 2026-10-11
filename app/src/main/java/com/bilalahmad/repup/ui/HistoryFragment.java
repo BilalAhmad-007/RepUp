@@ -38,10 +38,16 @@ public class HistoryFragment extends Fragment {
     }
 
     private void setupFilterSpinner() {
-        ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(
-                requireContext(), R.array.workout_filter_options, android.R.layout.simple_spinner_item);
-        filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinnerFilter.setAdapter(filterAdapter);
+        String[] filterOptions = {"All Workouts", "Push", "Pull", "Legs", "Cardio"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                R.layout.item_spinner,
+                filterOptions
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        binding.spinnerFilter.setAdapter(adapter);
     }
 
     private void setupRecyclerView() {
