@@ -44,10 +44,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="RepUp"
+                    android:text="Rep"
                     android:textColor="@color/text_dark"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Up"
+                    android:textColor="@color/primary_orange"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                     />
             </LinearLayout>
 
             <LinearLayout
