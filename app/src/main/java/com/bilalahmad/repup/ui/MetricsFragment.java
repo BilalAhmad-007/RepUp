@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bilalahmad.repup.R;
+import com.bilalahmad.repup.data.entity.UserMetricEntity;
+import com.bilalahmad.repup.database.AppDatabase;
 import com.bilalahmad.repup.databinding.FragmentMetricsBinding;
 
 import java.util.Locale;
@@ -69,6 +71,7 @@ public class MetricsFragment extends Fragment {
         String ageStr = binding.etAge.getText().toString().trim();
         String heightStr = binding.etHeight.getText().toString().trim();
         String weightStr = binding.etWeight.getText().toString().trim();
+        String sex = binding.spinnerSex.getSelectedItem().toString();
 
         if (ageStr.isEmpty() || heightStr.isEmpty() || weightStr.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill in all inputs", Toast.LENGTH_SHORT).show();
@@ -119,6 +122,18 @@ public class MetricsFragment extends Fragment {
         // Toggle visibility to display calculated results
         binding.layoutEmptyState.setVisibility(View.GONE);
         binding.layoutResultsState.setVisibility(View.VISIBLE);
+
+        UserMetricEntity metricEntity = new UserMetricEntity(
+                age, heightCm, weightKg, sex, bmi, bmr, tdee, System.currentTimeMillis()
+        );
+
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            AppDatabase.getInstance(requireContext())
+                    .userMetricDao()
+                    .insertMetric(metricEntity);
+        });
+
+        Toast.makeText(requireContext(), "Metrics calculated & saved!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
