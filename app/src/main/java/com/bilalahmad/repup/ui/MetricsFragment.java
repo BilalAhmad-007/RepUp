@@ -36,6 +36,7 @@ public class MetricsFragment extends Fragment {
         setupSpinners();
 
         binding.btnCalculateMetrics.setOnClickListener(v -> calculateMetrics());
+        loadLatestMetrics();
     }
 
     private void setupSpinners() {
@@ -104,7 +105,7 @@ public class MetricsFragment extends Fragment {
             textColor = android.graphics.Color.parseColor("#DC2626"); // Crimson Red
         }
 
-        // 2. BMR Calculation (Mifflin-St Jeor)
+        // 2. BMR Calculation
         double bmr = (10.0 * weightKg) + (6.25 * heightCm) - (5.0 * age) + (isMale ? 5 : -161);
 
         // 3. TDEE Calculation
@@ -134,6 +135,49 @@ public class MetricsFragment extends Fragment {
         });
 
         Toast.makeText(requireContext(), "Metrics calculated & saved!", Toast.LENGTH_SHORT).show();
+    }
+    private void loadLatestMetrics() {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            UserMetricEntity latestMetric = AppDatabase.getInstance(requireContext())
+                    .userMetricDao()
+                    .getLatestMetric();
+
+            if (latestMetric != null && isAdded()) {
+                requireActivity().runOnUiThread(() -> populateUiWithMetric(latestMetric));
+            }
+        });
+    }
+    private void populateUiWithMetric(UserMetricEntity metric) {
+        // 1. Pre-fill input fields
+        binding.etAge.setText(String.valueOf(metric.getAge()));
+        binding.etHeight.setText(String.valueOf(metric.getHeightCm()));
+        binding.etWeight.setText(String.valueOf(metric.getWeightKg()));
+
+        // 2. Set calculated text views
+        binding.tvBmiValue.setText(String.format(Locale.US, "%.1f", metric.getBmi()));
+
+        // Determine text & color
+        double bmi = metric.getBmi();
+        if (bmi < 18.5) {
+            binding.tvBmiCategory.setText("Underweight");
+            binding.tvBmiCategory.setTextColor(android.graphics.Color.parseColor("#D97706"));
+        } else if (bmi < 25.0) {
+            binding.tvBmiCategory.setText("Healthy weight range");
+            binding.tvBmiCategory.setTextColor(android.graphics.Color.parseColor("#2E7D32"));
+        } else if (bmi < 30.0) {
+            binding.tvBmiCategory.setText("Overweight range");
+            binding.tvBmiCategory.setTextColor(android.graphics.Color.parseColor("#FF6B00"));
+        } else {
+            binding.tvBmiCategory.setText("Obesity range");
+            binding.tvBmiCategory.setTextColor(android.graphics.Color.parseColor("#DC2626"));
+        }
+
+        binding.tvBmrValue.setText(String.format(Locale.US, "%,d", Math.round(metric.getBmr())));
+        binding.tvTdeeValue.setText(String.format(Locale.US, "%,d", Math.round(metric.getTdee())));
+
+        // 3. Switch layout from Empty state to Results state
+        binding.layoutEmptyState.setVisibility(View.GONE);
+        binding.layoutResultsState.setVisibility(View.VISIBLE);
     }
 
     @Override
