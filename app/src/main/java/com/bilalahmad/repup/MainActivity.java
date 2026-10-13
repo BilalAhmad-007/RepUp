@@ -110,12 +110,23 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
     }
+    private void showPlanChangeConfirmation(String planName) {
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("Switch Active Plan?")
+                .setMessage("Are you sure you want to change your active workout plan to '" + planName + "'?")
+                .setPositiveButton("Switch Plan", (dialog, which) -> {
+                    // Active plan change logic here (SharedPref / Room DB update)
+                    Toast.makeText(this, "Active plan switched to " + planName, Toast.LENGTH_SHORT).show();
+
+                    // TODO: Update Today's Focus UI / 7-Day Rhythm UI
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
     }
-
-
 }
