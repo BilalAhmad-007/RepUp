@@ -156,7 +156,7 @@
                     android:layout_marginTop="24dp"
                     app:cardBackgroundColor="@color/dark_card_background"
                     app:cardCornerRadius="24dp"
-                    app:cardElevation="0dp">
+                    app:cardElevation="0.5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -228,6 +228,7 @@
                                 android:text="Intermediate"
                                 android:textColor="@color/text_dark"
                                 android:textSize="10sp" />
+
                         </LinearLayout>
 
                         <com.google.android.material.button.MaterialButton
@@ -401,6 +402,7 @@
                                     android:text="Current streak"
                                     android:textColor="@color/text_muted"
                                     android:textSize="10sp" />
+
                             </LinearLayout>
 
                             <View
