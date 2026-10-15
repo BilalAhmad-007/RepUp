@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
+    private String currentActivePlan = "Push / Pull / Legs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,19 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Notification Button Clicked", Toast.LENGTH_SHORT).show();
             // TODO: Navigate to Notification Screen
         });
+
+        //plan card listeners
+        binding.cardPlanPpl.setOnClickListener(v -> {
+            showPlanChangeConfirmation("Push / Pull / Legs");
+        });
+
+        binding.cardPlanFullBody.setOnClickListener(v -> {
+            showPlanChangeConfirmation("Full Body Foundation");
+        });
+
+        binding.cardPlanUpperLower.setOnClickListener(v -> {
+            showPlanChangeConfirmation("Upper / Lower Split");
+        });
     }
 
     private void setUpBottomNavigation(){
@@ -115,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Switch Active Plan?")
                 .setMessage("Are you sure you want to change your active workout plan to '" + planName + "'?")
                 .setPositiveButton("Switch Plan", (dialog, which) -> {
-                    // Active plan change logic here (SharedPref / Room DB update)
+
                     Toast.makeText(this, "Active plan switched to " + planName, Toast.LENGTH_SHORT).show();
 
                     // TODO: Update Today's Focus UI / 7-Day Rhythm UI

@@ -998,9 +998,12 @@
 
                 <!-- PLAN CARD 1 -->
                 <LinearLayout
+                    android:id="@+id/cardPlanPpl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:background="@drawable/bg_active_plan_card"
                     android:orientation="vertical"
                     android:padding="20dp">
@@ -1077,9 +1080,12 @@
 
                 <!-- PLAN CARD 2 -->
                 <LinearLayout
+                    android:id="@+id/cardPlanFullBody"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:background="@drawable/bg_white_card"
                     android:orientation="vertical"
                     android:padding="20dp">
@@ -1155,9 +1161,12 @@
 
                 <!-- PLAN CARD 3 -->
                 <LinearLayout
+                    android:id="@+id/cardPlanUpperLower"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:background="@drawable/bg_white_card"
                     android:orientation="vertical"
                     android:padding="20dp">
