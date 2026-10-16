@@ -2,6 +2,7 @@ package com.bilalahmad.repup;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -87,17 +88,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //plan card listeners
-        binding.cardPlanPpl.setOnClickListener(v -> {
-            showPlanChangeConfirmation("Push / Pull / Legs");
-        });
+        binding.cardPlanPpl.setOnClickListener(v -> handlePlanClick("Push / Pull / Legs"));
+        binding.cardPlanFullBody.setOnClickListener(v -> handlePlanClick("Full Body Foundation"));
+        binding.cardPlanUpperLower.setOnClickListener(v -> handlePlanClick("Upper / Lower Split"));
+    }
+    private void handlePlanClick(String clickedPlan) {
+        // if already selected plan, show toast
+        if (clickedPlan.equals(currentActivePlan)) {
+            Toast.makeText(this, clickedPlan + " is already your active plan", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        binding.cardPlanFullBody.setOnClickListener(v -> {
-            showPlanChangeConfirmation("Full Body Foundation");
-        });
-
-        binding.cardPlanUpperLower.setOnClickListener(v -> {
-            showPlanChangeConfirmation("Upper / Lower Split");
-        });
+        //if another
+        showPlanChangeConfirmation(clickedPlan);
     }
 
     private void setUpBottomNavigation(){
@@ -127,15 +130,57 @@ public class MainActivity extends AppCompatActivity {
     private void showPlanChangeConfirmation(String planName) {
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("Switch Active Plan?")
-                .setMessage("Are you sure you want to change your active workout plan to '" + planName + "'?")
-                .setPositiveButton("Switch Plan", (dialog, which) -> {
+                .setMessage("Do you want to switch your active workout plan to '" + planName + "'?")
+                .setPositiveButton("Switch", (dialog, which) -> {
+
+                    currentActivePlan = planName;
+
+                    updatePlanCardsUI(planName);
 
                     Toast.makeText(this, "Active plan switched to " + planName, Toast.LENGTH_SHORT).show();
-
-                    // TODO: Update Today's Focus UI / 7-Day Rhythm UI
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+    private void updatePlanCardsUI(String activePlan) {
+
+        binding.cardPlanPpl.setBackgroundResource(R.drawable.bg_white_card);
+        binding.cardPlanFullBody.setBackgroundResource(R.drawable.bg_white_card);
+        binding.cardPlanUpperLower.setBackgroundResource(R.drawable.bg_white_card);
+
+        resetBadge(binding.tvBadgePpl, "Advance");
+        resetBadge(binding.tvBadgeFullBody, "Beginner");
+        resetBadge(binding.tvBadgeUpperLower, "Intermediate");
+
+        resetIcon(binding.ivIconPpl);
+        resetIcon(binding.ivIconFullBody);
+        resetIcon(binding.ivIconUpperLower);
+
+
+        if (activePlan.equals("Push / Pull / Legs")) {
+            binding.cardPlanPpl.setBackgroundResource(R.drawable.bg_active_plan_card);
+            setActiveBadge(binding.tvBadgePpl);
+        } else if (activePlan.equals("Full Body Foundation")) {
+            binding.cardPlanFullBody.setBackgroundResource(R.drawable.bg_active_plan_card);
+            setActiveBadge(binding.tvBadgeFullBody);
+        } else if (activePlan.equals("Upper / Lower Split")) {
+            binding.cardPlanUpperLower.setBackgroundResource(R.drawable.bg_active_plan_card);
+            setActiveBadge(binding.tvBadgeUpperLower);
+        }
+    }
+
+    private void setActiveBadge(TextView textView) {
+        textView.setText("• Active plan");
+        textView.setTextColor(getResources().getColor(R.color.primary_orange, getTheme()));
+        textView.setBackgroundResource(R.drawable.bg_icon_badge);
+        textView.setTypeface(null, android.graphics.Typeface.BOLD);
+    }
+
+    private void resetBadge(TextView textView, String defaultText) {
+        textView.setText(defaultText);
+        textView.setTextColor(getResources().getColor(R.color.text_muted, getTheme()));
+        textView.setBackgroundResource(R.drawable.bg_outline_button);
+        textView.setTypeface(null, android.graphics.Typeface.NORMAL);
     }
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
