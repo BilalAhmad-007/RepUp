@@ -2,6 +2,7 @@ package com.bilalahmad.repup;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,11 +13,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.bilalahmad.repup.adapter.WeeklyRhythmAdapter;
 import com.bilalahmad.repup.database.WorkoutSession;
 import com.bilalahmad.repup.databinding.ActivityMainBinding;
 import com.bilalahmad.repup.ui.HistoryFragment;
 import com.bilalahmad.repup.ui.MetricsFragment;
 import com.bilalahmad.repup.viewmodel.MainViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
     private String currentActivePlan = "Push / Pull / Legs";
+    private WeeklyRhythmAdapter weeklyAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +52,17 @@ public class MainActivity extends AppCompatActivity {
 
         setUpClickListeners();
         setUpBottomNavigation();
+        setupWeeklyRhythmRecyclerView();
 
+        updatePlanCardsUI(currentActivePlan);
+
+    }
+    private void setupWeeklyRhythmRecyclerView() {
+        weeklyAdapter = new WeeklyRhythmAdapter();
+        binding.rvWeeklyRhythm.setLayoutManager(
+                new androidx.recyclerview.widget.LinearLayoutManager(this, androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false)
+        );
+        binding.rvWeeklyRhythm.setAdapter(weeklyAdapter);
     }
     private void observeViewModel() {
         // Observe total workouts count
@@ -160,13 +177,20 @@ public class MainActivity extends AppCompatActivity {
         if (activePlan.equals("Push / Pull / Legs")) {
             binding.cardPlanPpl.setBackgroundResource(R.drawable.bg_active_plan_card);
             setActiveBadge(binding.tvBadgePpl);
+            setActiveIcon(binding.ivIconPpl);
+
         } else if (activePlan.equals("Full Body Foundation")) {
             binding.cardPlanFullBody.setBackgroundResource(R.drawable.bg_active_plan_card);
             setActiveBadge(binding.tvBadgeFullBody);
+            setActiveIcon(binding.ivIconFullBody);
+
         } else if (activePlan.equals("Upper / Lower Split")) {
             binding.cardPlanUpperLower.setBackgroundResource(R.drawable.bg_active_plan_card);
             setActiveBadge(binding.tvBadgeUpperLower);
+            setActiveIcon(binding.ivIconUpperLower);
         }
+
+        updateWeeklyRhythmCards(activePlan);
     }
 
     private void setActiveBadge(TextView textView) {
@@ -181,6 +205,54 @@ public class MainActivity extends AppCompatActivity {
         textView.setTextColor(getResources().getColor(R.color.text_muted, getTheme()));
         textView.setBackgroundResource(R.drawable.bg_outline_button);
         textView.setTypeface(null, android.graphics.Typeface.NORMAL);
+    }
+
+    private void setActiveIcon(ImageView imageView) {
+        imageView.setBackgroundResource(R.drawable.bg_icon_badge);
+        imageView.setImageTintList(android.content.res.ColorStateList.valueOf(
+                getResources().getColor(R.color.primary_orange, getTheme())
+        ));
+    }
+
+    private void resetIcon(ImageView imageView) {
+        imageView.setBackgroundResource(R.drawable.bg_avatar_circle);
+        imageView.setImageTintList(android.content.res.ColorStateList.valueOf(
+                getResources().getColor(R.color.text_dark, getTheme())
+        ));
+    }
+
+    private void updateWeeklyRhythmCards(String activePlan) {
+        List<DayRhythmItem> rhythmList = new ArrayList<>();
+
+        if (activePlan.equals("Push / Pull / Legs")) {
+            rhythmList.add(new DayRhythmItem("MON", "Push day", "6 exercises · 48 min", R.drawable.ic_dumbbell, true, false));
+            rhythmList.add(new DayRhythmItem("TUE", "Pull day", "6 exercises · 52 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("WED", "Legs day", "5 exercises · 45 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("THU", "Push day", "6 exercises · 48 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("FRI", "Pull day", "6 exercises · 52 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("SAT", "Legs day", "5 exercises · 45 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("SUN", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+        } else if (activePlan.equals("Full Body Foundation")) {
+            rhythmList.add(new DayRhythmItem("MON", "Full Body A", "7 exercises · 60 min", R.drawable.ic_dumbbell, true, false));
+            rhythmList.add(new DayRhythmItem("TUE", "Rest Day", "Recovery & Mobility", R.drawable.ic_flame, false, true));
+            rhythmList.add(new DayRhythmItem("WED", "Full Body B", "7 exercises · 60 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("THU", "Rest Day", "Recovery & Mobility", R.drawable.ic_flame, false, true));
+            rhythmList.add(new DayRhythmItem("FRI", "Full Body C", "7 exercises · 60 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("SAT", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+            rhythmList.add(new DayRhythmItem("SUN", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+        } else if (activePlan.equals("Upper / Lower Split")) {
+            rhythmList.add(new DayRhythmItem("MON", "Upper Body", "6 exercises · 50 min", R.drawable.ic_dumbbell, true, false));
+            rhythmList.add(new DayRhythmItem("TUE", "Lower Body", "5 exercises · 55 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("WED", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+            rhythmList.add(new DayRhythmItem("THU", "Upper Body", "6 exercises · 50 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("FRI", "Lower Body", "5 exercises · 55 min", R.drawable.ic_dumbbell, false, false));
+            rhythmList.add(new DayRhythmItem("SAT", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+            rhythmList.add(new DayRhythmItem("SUN", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+        }
+
+        if (weeklyAdapter != null) {
+            weeklyAdapter.setItems(rhythmList);
+        }
     }
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
