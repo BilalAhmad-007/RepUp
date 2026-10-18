@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
     private String currentActivePlan = "Push / Pull / Legs";
+    private static final String PREFS_NAME = "RepUpPrefs";
+    private static final String KEY_ACTIVE_PLAN = "active_plan";
     private WeeklyRhythmAdapter weeklyAdapter;
 
     @Override
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
         observeViewModel(); //for workout count and duration update
 
+        currentActivePlan = getSavedPlan();
+
         setUpClickListeners();
         setUpBottomNavigation();
         setupWeeklyRhythmRecyclerView();
@@ -63,6 +67,26 @@ public class MainActivity extends AppCompatActivity {
                 new androidx.recyclerview.widget.LinearLayoutManager(this, androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false)
         );
         binding.rvWeeklyRhythm.setAdapter(weeklyAdapter);
+
+        int todayPosition = getTodayPositionIndex();
+        if (todayPosition != -1) {
+            binding.rvWeeklyRhythm.scrollToPosition(todayPosition);
+        }
+    }
+    private int getTodayPositionIndex() {
+      java.util.Calendar calendar = java.util.Calendar.getInstance();
+      int dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK);
+
+      switch (dayOfWeek) {
+            case java.util.Calendar.TUESDAY: return 1;
+            case java.util.Calendar.WEDNESDAY: return 2;
+            case java.util.Calendar.THURSDAY: return 3;
+            case java.util.Calendar.FRIDAY: return 4;
+            case java.util.Calendar.SATURDAY: return 5;
+            case java.util.Calendar.SUNDAY: return 6;
+          case java.util.Calendar.MONDAY:
+          default: return 0;
+      }
     }
     private void observeViewModel() {
         // Observe total workouts count
@@ -152,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
 
                     currentActivePlan = planName;
 
+                    saveSelectedPlan(currentActivePlan);
+
                     updatePlanCardsUI(planName);
 
                     Toast.makeText(this, "Active plan switched to " + planName, Toast.LENGTH_SHORT).show();
@@ -191,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         updateWeeklyRhythmCards(activePlan);
+        updateMomentumCardUI(activePlan);
     }
 
     private void setActiveBadge(TextView textView) {
@@ -223,36 +250,113 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateWeeklyRhythmCards(String activePlan) {
         List<DayRhythmItem> rhythmList = new ArrayList<>();
+        String todayName = getCurrentDayName();
 
         if (activePlan.equals("Push / Pull / Legs")) {
-            rhythmList.add(new DayRhythmItem("MON", "Push day", "6 exercises · 48 min", R.drawable.ic_dumbbell, true, false));
-            rhythmList.add(new DayRhythmItem("TUE", "Pull day", "6 exercises · 52 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("WED", "Legs day", "5 exercises · 45 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("THU", "Push day", "6 exercises · 48 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("FRI", "Pull day", "6 exercises · 52 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("SAT", "Legs day", "5 exercises · 45 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("SUN", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+            rhythmList.add(new DayRhythmItem("MON", "Push day", "6 exercises · 48 min", R.drawable.ic_dumbbell, todayName.equals("MON"), false));
+            rhythmList.add(new DayRhythmItem("TUE", "Pull day", "6 exercises · 52 min", R.drawable.ic_dumbbell, todayName.equals("TUE"), false));
+            rhythmList.add(new DayRhythmItem("WED", "Legs day", "5 exercises · 45 min", R.drawable.ic_dumbbell, todayName.equals("WED"), false));
+            rhythmList.add(new DayRhythmItem("THU", "Push day", "6 exercises · 48 min", R.drawable.ic_dumbbell, todayName.equals("THU"), false));
+            rhythmList.add(new DayRhythmItem("FRI", "Pull day", "6 exercises · 52 min", R.drawable.ic_dumbbell, todayName.equals("FRI"), false));
+            rhythmList.add(new DayRhythmItem("SAT", "Legs day", "5 exercises · 45 min", R.drawable.ic_dumbbell, todayName.equals("SAT"), false));
+            rhythmList.add(new DayRhythmItem("SUN", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("SUN"), true));
+
         } else if (activePlan.equals("Full Body Foundation")) {
-            rhythmList.add(new DayRhythmItem("MON", "Full Body A", "7 exercises · 60 min", R.drawable.ic_dumbbell, true, false));
-            rhythmList.add(new DayRhythmItem("TUE", "Rest Day", "Recovery & Mobility", R.drawable.ic_flame, false, true));
-            rhythmList.add(new DayRhythmItem("WED", "Full Body B", "7 exercises · 60 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("THU", "Rest Day", "Recovery & Mobility", R.drawable.ic_flame, false, true));
-            rhythmList.add(new DayRhythmItem("FRI", "Full Body C", "7 exercises · 60 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("SAT", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
-            rhythmList.add(new DayRhythmItem("SUN", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+            rhythmList.add(new DayRhythmItem("MON", "Full Body A", "7 exercises · 60 min", R.drawable.ic_dumbbell, todayName.equals("MON"), false));
+            rhythmList.add(new DayRhythmItem("TUE", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("TUE"), true));
+            rhythmList.add(new DayRhythmItem("WED", "Full Body B", "7 exercises · 60 min", R.drawable.ic_dumbbell, todayName.equals("WED"), false));
+            rhythmList.add(new DayRhythmItem("THU", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("THU"), true));
+            rhythmList.add(new DayRhythmItem("FRI", "Full Body C", "7 exercises · 60 min", R.drawable.ic_dumbbell, todayName.equals("FRI"), false));
+            rhythmList.add(new DayRhythmItem("SAT", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("SAT"), true));
+            rhythmList.add(new DayRhythmItem("SUN", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("SUN"), true));
+
         } else if (activePlan.equals("Upper / Lower Split")) {
-            rhythmList.add(new DayRhythmItem("MON", "Upper Body", "6 exercises · 50 min", R.drawable.ic_dumbbell, true, false));
-            rhythmList.add(new DayRhythmItem("TUE", "Lower Body", "5 exercises · 55 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("WED", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
-            rhythmList.add(new DayRhythmItem("THU", "Upper Body", "6 exercises · 50 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("FRI", "Lower Body", "5 exercises · 55 min", R.drawable.ic_dumbbell, false, false));
-            rhythmList.add(new DayRhythmItem("SAT", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
-            rhythmList.add(new DayRhythmItem("SUN", "Rest Day", "Active Recovery", R.drawable.ic_flame, false, true));
+            rhythmList.add(new DayRhythmItem("MON", "Upper Body", "6 exercises · 50 min", R.drawable.ic_dumbbell, todayName.equals("MON"), false));
+            rhythmList.add(new DayRhythmItem("TUE", "Lower Body", "5 exercises · 55 min", R.drawable.ic_dumbbell, todayName.equals("TUE"), false));
+            rhythmList.add(new DayRhythmItem("WED", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("WED"), true));
+            rhythmList.add(new DayRhythmItem("THU", "Upper Body", "6 exercises · 50 min", R.drawable.ic_dumbbell, todayName.equals("THU"), false));
+            rhythmList.add(new DayRhythmItem("FRI", "Lower Body", "5 exercises · 55 min", R.drawable.ic_dumbbell, todayName.equals("FRI"), false));
+            rhythmList.add(new DayRhythmItem("SAT", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("SAT"), true));
+            rhythmList.add(new DayRhythmItem("SUN", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("SUN"), true));
         }
 
         if (weeklyAdapter != null) {
             weeklyAdapter.setItems(rhythmList);
+
+            int todayIndex = getTodayPositionIndex();
+            if (todayIndex != -1) {
+                binding.rvWeeklyRhythm.scrollToPosition(todayIndex);
+            }
         }
+    }
+    private void updateMomentumCardUI(String activePlan) {
+        int targetWorkouts = 6;
+
+        if (activePlan.equals("Push / Pull / Legs")) {
+            targetWorkouts = 6;
+        } else if (activePlan.equals("Full Body Foundation")) {
+            targetWorkouts = 3;
+        } else if (activePlan.equals("Upper / Lower Split")) {
+            targetWorkouts = 4;
+        }
+
+        // Set dynamic plan target
+        binding.tvWorkoutsTarget.setText(" / " + targetWorkouts);
+        binding.pbMomentumWorkouts.setMax(targetWorkouts);
+
+        // Fetch actual progress from ViewModel or Room DB
+        viewModel.getTotalWorkoutsCount().observe(this, count -> {
+            int completed = (count != null) ? count : 0;
+
+            int maxTarget = binding.pbMomentumWorkouts.getMax();
+            if (completed > maxTarget) {
+                completed = maxTarget;
+            }
+
+            binding.tvWorkoutsCompleted.setText(String.valueOf(completed));
+            binding.pbMomentumWorkouts.setProgress(completed);
+        });
+
+        viewModel.getTotalDurationMinutes().observe(this, minutes -> {
+            if (minutes != null) {
+                double hours = minutes / 60.0;
+                binding.tvTimeInvested.setText(String.format(java.util.Locale.US, "%.1f hrs", hours));
+            } else {
+                binding.tvTimeInvested.setText("0 hrs");
+            }
+        });
+    }
+    private String getCurrentDayName() {
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        int dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK);
+
+        switch (dayOfWeek) {
+            case java.util.Calendar.TUESDAY:
+                return "TUE";
+            case java.util.Calendar.WEDNESDAY:
+                return "WED";
+            case java.util.Calendar.THURSDAY:
+                return "THU";
+            case java.util.Calendar.FRIDAY:
+                return "FRI";
+            case java.util.Calendar.SATURDAY:
+                return "SAT";
+            case java.util.Calendar.SUNDAY:
+                return "SUN";
+            case java.util.Calendar.MONDAY:
+            default:
+                return "MON";
+        }
+    }
+    private void saveSelectedPlan(String planName) {
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(KEY_ACTIVE_PLAN, planName)
+                .apply();
+    }
+    private String getSavedPlan() {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .getString(KEY_ACTIVE_PLAN, "Push / Pull / Legs");
     }
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()

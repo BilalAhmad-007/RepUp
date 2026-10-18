@@ -65,12 +65,29 @@ public class WeeklyRhythmAdapter extends RecyclerView.Adapter<WeeklyRhythmAdapte
             int orangeColor = ContextCompat.getColor(context, R.color.primary_orange);
             int mutedColor = ContextCompat.getColor(context, R.color.text_muted);
             int darkColor = ContextCompat.getColor(context, R.color.text_dark);
+            int restGreenColor = Color.parseColor("#2E7D32");
 
-            if (item.isSelected()) {
+            binding.tvWorkoutTitle.setTextColor(darkColor);
+
+            if (item.isSelected() && item.isRestDay()) {
+                binding.cardRhythmRoot.setBackgroundResource(R.drawable.bg_selected_rest_card);
+                binding.tvBadgeSelected.setVisibility(View.GONE);
+                binding.tvDayName.setTextColor(restGreenColor);
+                binding.tvWorkoutTitle.setTextColor(restGreenColor);
+                binding.ivWorkoutIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pulse));
+                binding.ivWorkoutIcon.setImageTintList(ColorStateList.valueOf(restGreenColor));
+                binding.dividerLine.setBackgroundColor(Color.parseColor("#B2DFDB"));
+                binding.layoutBottomStatus.setVisibility(View.VISIBLE);
+                binding.tvActionText.setText("You've earned it");
+                binding.tvActionText.setTextColor(restGreenColor);
+                binding.tvActionArrow.setVisibility(View.GONE);
+
+            }else if (item.isSelected()) {
                 //SELECTED CARD
                 binding.cardRhythmRoot.setBackgroundResource(R.drawable.bg_orange_tint_card);
                 binding.tvBadgeSelected.setVisibility(View.VISIBLE);
                 binding.tvDayName.setTextColor(orangeColor);
+                binding.tvWorkoutTitle.setTextColor(darkColor);
                 binding.ivWorkoutIcon.setImageTintList(ColorStateList.valueOf(orangeColor));
                 binding.dividerLine.setBackgroundColor(Color.parseColor("#F2D2C6"));
                 binding.layoutBottomStatus.setVisibility(View.VISIBLE);
@@ -79,10 +96,11 @@ public class WeeklyRhythmAdapter extends RecyclerView.Adapter<WeeklyRhythmAdapte
                 binding.tvActionArrow.setTextColor(orangeColor);
 
             } else if (item.isRestDay()) {
-                //REST DAY CARD
+                //UNSELECTED REST DAY CARD
                 binding.cardRhythmRoot.setBackgroundResource(R.drawable.bg_muted_green_card);
                 binding.tvBadgeSelected.setVisibility(View.GONE);
                 binding.tvDayName.setTextColor(mutedColor);
+                binding.tvWorkoutTitle.setTextColor(mutedColor);
                 binding.ivWorkoutIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pulse));
                 binding.ivWorkoutIcon.setImageTintList(ColorStateList.valueOf(mutedColor));
                 binding.dividerLine.setBackgroundColor(Color.parseColor("#5513150E"));
@@ -96,6 +114,7 @@ public class WeeklyRhythmAdapter extends RecyclerView.Adapter<WeeklyRhythmAdapte
                 binding.cardRhythmRoot.setBackgroundResource(R.drawable.bg_white_card);
                 binding.tvBadgeSelected.setVisibility(View.GONE);
                 binding.tvDayName.setTextColor(mutedColor);
+                binding.tvWorkoutTitle.setTextColor(darkColor);
                 binding.ivWorkoutIcon.setImageTintList(ColorStateList.valueOf(darkColor));
                 binding.dividerLine.setBackgroundColor(Color.parseColor("#E0E0E0"));
                 binding.layoutBottomStatus.setVisibility(View.VISIBLE);
