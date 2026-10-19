@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/bg_input_field"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <!-- Number Badge -->
+    <TextView
+        android:id="@+id/tvIndexBadge"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/bg_day_chip_selected"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/primary_orange"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvAddedExerciseName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:text="Barbell bench press"
+        android:textColor="@color/text_dark"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/btnDeleteExercise"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@drawable/ic_close"
+        app:tint="@color/text_muted" />
+</LinearLayout>

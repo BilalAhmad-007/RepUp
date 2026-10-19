@@ -1,6 +1,8 @@
 package com.bilalahmad.repup;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,12 +20,15 @@ import com.bilalahmad.repup.adapter.WeeklyRhythmAdapter;
 import com.bilalahmad.repup.database.WorkoutSession;
 import com.bilalahmad.repup.databinding.ActivityMainBinding;
 import com.bilalahmad.repup.dialog.CustomizePlanBottomSheet;
+import com.bilalahmad.repup.databinding.ItemCustomPlanCardBinding;
 import com.bilalahmad.repup.ui.HistoryFragment;
 import com.bilalahmad.repup.ui.MetricsFragment;
 import com.bilalahmad.repup.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private String currentActivePlan = "Push / Pull / Legs";
     private static final String PREFS_NAME = "RepUpPrefs";
     private static final String KEY_ACTIVE_PLAN = "active_plan";
+    private static final String KEY_CUSTOM_PLANS = "custom_plans_list";
     private WeeklyRhythmAdapter weeklyAdapter;
 
     @Override
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         setupWeeklyRhythmRecyclerView();
 
         updatePlanCardsUI(currentActivePlan);
+        loadCustomPlanCardsUI();
 
     }
     private void setupWeeklyRhythmRecyclerView() {
@@ -138,7 +145,12 @@ public class MainActivity extends AppCompatActivity {
         bottomSheet.setOnPlanSavedListener(newPlanName -> {
             currentActivePlan = newPlanName;
             saveSelectedPlan(currentActivePlan);
+            saveCustomPlanToPrefs(newPlanName);
+
             updatePlanCardsUI(currentActivePlan);
+            loadCustomPlanCardsUI();
+
+            Toast.makeText(this, "Custom plan '" + newPlanName + "' created & saved!", Toast.LENGTH_SHORT).show();
         });
         bottomSheet.show(getSupportFragmentManager(), "CustomizePlanBottomSheet");
     }
@@ -224,6 +236,8 @@ public class MainActivity extends AppCompatActivity {
             setActiveBadge(binding.tvBadgeUpperLower);
             setActiveIcon(binding.ivIconUpperLower);
         }
+
+        loadCustomPlanCardsUI();
 
         updateWeeklyRhythmCards(activePlan);
         updateMomentumCardUI(activePlan);
@@ -367,6 +381,61 @@ public class MainActivity extends AppCompatActivity {
         return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                 .getString(KEY_ACTIVE_PLAN, "Push / Pull / Legs");
     }
+
+    private void saveCustomPlanToPrefs(String planName) {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        Set<String> customPlans = new HashSet<>(prefs.getStringSet(KEY_CUSTOM_PLANS, new HashSet<>()));
+        customPlans.add(planName);
+
+        prefs.edit().putStringSet(KEY_CUSTOM_PLANS, customPlans).apply();
+    }
+    private List<String> getSavedCustomPlans() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        Set<String> customPlans = new HashSet<>(prefs.getStringSet(KEY_CUSTOM_PLANS, new HashSet<>()));
+        return new ArrayList<>(customPlans);
+    }
+    private void loadCustomPlanCardsUI() {
+        binding.layoutCustomPlansContainer.removeAllViews();
+        List<String> customPlans = getSavedCustomPlans();
+
+        for (String planName : customPlans) {
+            ItemCustomPlanCardBinding cardBinding = ItemCustomPlanCardBinding.inflate(
+                    getLayoutInflater(), binding.layoutCustomPlansContainer, false
+            );
+
+            cardBinding.tvCustomPlanTitle.setText(planName);
+
+            if (planName.equals(currentActivePlan)) {
+                cardBinding.getRoot().setBackgroundResource(R.drawable.bg_active_plan_card);
+                cardBinding.tvCustomBadge.setText("• Active plan");
+                cardBinding.tvCustomBadge.setTextColor(getResources().getColor(R.color.primary_orange, getTheme()));
+                cardBinding.tvCustomBadge.setBackgroundResource(R.drawable.bg_icon_badge);
+                cardBinding.tvCustomBadge.setTypeface(null, android.graphics.Typeface.BOLD);
+
+                cardBinding.ivCustomIcon.setBackgroundResource(R.drawable.bg_icon_badge);
+                cardBinding.ivCustomIcon.setImageTintList(android.content.res.ColorStateList.valueOf(
+                        getResources().getColor(R.color.primary_orange, getTheme())
+                ));
+
+            } else {
+                cardBinding.getRoot().setBackgroundResource(R.drawable.bg_white_card);
+                cardBinding.tvCustomBadge.setText("Custom");
+                cardBinding.tvCustomBadge.setTextColor(getResources().getColor(R.color.text_muted, getTheme()));
+                cardBinding.tvCustomBadge.setBackgroundResource(R.drawable.bg_outline_button);
+                cardBinding.tvCustomBadge.setTypeface(null, android.graphics.Typeface.NORMAL);
+
+                cardBinding.ivCustomIcon.setBackgroundResource(R.drawable.bg_avatar_circle);
+                cardBinding.ivCustomIcon.setImageTintList(android.content.res.ColorStateList.valueOf(
+                        getResources().getColor(R.color.text_dark, getTheme())
+                ));
+            }
+
+            cardBinding.getRoot().setOnClickListener(v -> handlePlanClick(planName));
+
+            binding.layoutCustomPlansContainer.addView(cardBinding.getRoot());
+        }
+    }
+
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()

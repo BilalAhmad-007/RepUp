@@ -105,17 +105,71 @@
             android:textSize="12sp" />
     </RelativeLayout>
 
-    <!-- Exercises Checklist RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvExercises"
+    <!-- Choose an Exercise Container Card -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_marginTop="8dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_choose_exercise_container"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose an exercise"
+            android:textColor="@color/text_muted"
+            android:letterSpacing="0.02"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <!-- Category Spinner / Dropdown Box -->
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_input_field"
+            android:paddingHorizontal="12dp" />
+
+        <!-- Add Exercise Button -->
+        <LinearLayout
+            android:id="@+id/btnAddExerciseBox"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_input_field"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_plus"
+                app:tint="@color/text_muted" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="Add Custom Exercise"
+                android:textColor="@color/text_muted"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Added Exercises List RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAddedExercises"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="12dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:text="Leave a day empty to make it a rest day."
         android:textColor="@color/text_muted"
         android:textSize="11sp" />
@@ -123,7 +177,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:background="#E0E0E0" />
 
     <!-- Action Buttons -->
