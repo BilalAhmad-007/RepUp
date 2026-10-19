@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bilalahmad.repup.adapter.WeeklyRhythmAdapter;
 import com.bilalahmad.repup.database.WorkoutSession;
 import com.bilalahmad.repup.databinding.ActivityMainBinding;
+import com.bilalahmad.repup.dialog.CustomizePlanBottomSheet;
 import com.bilalahmad.repup.ui.HistoryFragment;
 import com.bilalahmad.repup.ui.MetricsFragment;
 import com.bilalahmad.repup.viewmodel.MainViewModel;
@@ -120,8 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
         binding.btnCustomizePlan.setOnClickListener(v -> {
-            Toast.makeText(this, "Customize Plan Button Clicked", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to Customize Plan Screen
+           openCustomizePlanBottomSheet();
         });
         binding.btnNotification.setOnClickListener(v -> {
             Toast.makeText(this, "Notification Button Clicked", Toast.LENGTH_SHORT).show();
@@ -132,6 +132,15 @@ public class MainActivity extends AppCompatActivity {
         binding.cardPlanPpl.setOnClickListener(v -> handlePlanClick("Push / Pull / Legs"));
         binding.cardPlanFullBody.setOnClickListener(v -> handlePlanClick("Full Body Foundation"));
         binding.cardPlanUpperLower.setOnClickListener(v -> handlePlanClick("Upper / Lower Split"));
+    }
+    private void openCustomizePlanBottomSheet() {
+        CustomizePlanBottomSheet bottomSheet = new CustomizePlanBottomSheet();
+        bottomSheet.setOnPlanSavedListener(newPlanName -> {
+            currentActivePlan = newPlanName;
+            saveSelectedPlan(currentActivePlan);
+            updatePlanCardsUI(currentActivePlan);
+        });
+        bottomSheet.show(getSupportFragmentManager(), "CustomizePlanBottomSheet");
     }
     private void handlePlanClick(String clickedPlan) {
         // if already selected plan, show toast
