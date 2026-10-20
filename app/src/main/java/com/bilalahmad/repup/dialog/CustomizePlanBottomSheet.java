@@ -1,6 +1,9 @@
 package com.bilalahmad.repup.dialog;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +34,12 @@ public class CustomizePlanBottomSheet extends BottomSheetDialogFragment {
     private OnPlanSavedListener listener;
 
     private List<DayChipItem> dayList;
+    private List<String> weeklyDayTitles;
     private List<List<String>> weeklyAddedExercises;
     private DayChipAdapter dayChipAdapter;
     private AddedExerciseAdapter addedExerciseAdapter;
     private int selectedDayIndex = 0;
+    private boolean isUpdatingText = false;
 
     public interface OnPlanSavedListener {
         void onPlanSaved(String planName);
@@ -58,6 +63,11 @@ public class CustomizePlanBottomSheet extends BottomSheetDialogFragment {
         initMockData();
         setupDayChipsRecyclerView();
         setupSpinner();
+
+        isUpdatingText = true;
+        binding.etDayWorkoutTitle.setText(weeklyDayTitles.get(selectedDayIndex));
+        isUpdatingText = false;
+
         setupAddedExercisesRecyclerView(selectedDayIndex);
 
         binding.btnClose.setOnClickListener(v -> dismiss());
@@ -68,13 +78,42 @@ public class CustomizePlanBottomSheet extends BottomSheetDialogFragment {
 
         binding.btnSavePlan.setOnClickListener(v -> {
             String newPlanName = binding.etPlanName.getText().toString().trim();
-            if (!newPlanName.isEmpty() && listener != null) {
-                listener.onPlanSaved(newPlanName);
+            if (!newPlanName.isEmpty()){
+                saveCustomPlanExercises(newPlanName);
+                if(listener != null) {
+                    listener.onPlanSaved(newPlanName);
+                }
             }
             dismiss();
         });
-    }
 
+        binding.etDayWorkoutTitle.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isUpdatingText) weeklyDayTitles.set(selectedDayIndex, s.toString().trim());
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+    }
+    private void saveCustomPlanExercises(String planName) {
+        SharedPreferences prefs = requireContext().getSharedPreferences("RepUpPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        String[] days = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
+        for (int i = 0; i < 7; i++) {
+            List<String> list = weeklyAddedExercises.get(i);
+
+            String exerciseData = TextUtils.join(";", list);
+            editor.putString(planName + "_" + days[i], exerciseData);
+            editor.putString(planName + "_" + days[i] + "_title", weeklyDayTitles.get(i));
+        }
+        editor.apply();
+    }
     private void initMockData() {
         dayList = new ArrayList<>();
         dayList.add(new DayChipItem("Mon", 0, true, true));
@@ -86,23 +125,33 @@ public class CustomizePlanBottomSheet extends BottomSheetDialogFragment {
         dayList.add(new DayChipItem("Sun", 0, true, false));
 
         weeklyAddedExercises = new ArrayList<>();
+        weeklyDayTitles = new ArrayList<>();
+
         for (int i = 0; i < 7; i++) {
             List<String> exercises = new ArrayList<>();
             weeklyAddedExercises.add(exercises);
+            weeklyDayTitles.add("");
         }
     }
 
     private void setupDayChipsRecyclerView() {
         dayChipAdapter = new DayChipAdapter(dayList, position -> {
+            String currentText = binding.etDayWorkoutTitle.getText().toString();
+            weeklyDayTitles.set(selectedDayIndex, currentText);
+
             dayList.get(selectedDayIndex).setSelected(false);
             selectedDayIndex = position;
             dayList.get(selectedDayIndex).setSelected(true);
             dayChipAdapter.notifyDataSetChanged();
 
+            isUpdatingText = true;
+            binding.etDayWorkoutTitle.setText(weeklyDayTitles.get(selectedDayIndex));
+            isUpdatingText = false;
+
             updateSelectedDayHeader();
             setupAddedExercisesRecyclerView(selectedDayIndex);
         });
-
+        binding.etDayWorkoutTitle.setText(weeklyDayTitles.get(selectedDayIndex));
         binding.rvDayChips.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.rvDayChips.setAdapter(dayChipAdapter);
     }

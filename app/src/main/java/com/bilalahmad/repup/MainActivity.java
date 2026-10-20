@@ -302,6 +302,9 @@ public class MainActivity extends AppCompatActivity {
             rhythmList.add(new DayRhythmItem("SAT", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("SAT"), true));
             rhythmList.add(new DayRhythmItem("SUN", "Rest day", "Active Recovery", R.drawable.ic_flame, todayName.equals("SUN"), true));
         }
+        else {
+            rhythmList = loadCustomWeeklyRhythm(activePlan);
+        }
 
         if (weeklyAdapter != null) {
             weeklyAdapter.setItems(rhythmList);
@@ -312,6 +315,32 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private List<DayRhythmItem> loadCustomWeeklyRhythm(String planName) {
+        List<DayRhythmItem> rhythmList = new ArrayList<>();
+        String[] days = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
+        String todayName = getCurrentDayName();
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+        for (String day : days) {
+            String data = prefs.getString(planName + "_" + day, "");
+            String dayTitle = prefs.getString(planName + "_" + day + "_title", "");
+            if (data.isEmpty() && dayTitle.isEmpty()) {
+                rhythmList.add(new DayRhythmItem(day, "Rest day", "Active Recovery", R.drawable.ic_flame, day.equals(todayName), true));
+            } else {
+                String[] exercises = data.isEmpty() ? new String[0] : data.split(";");
+                int count = exercises.length;
+                int estMinutes = count * 8;
+                String subtitle = count + " exercises · " + estMinutes + " min";
+
+                String titleToDisplay = dayTitle.isEmpty() ? "Custom Workout" : dayTitle;
+
+                rhythmList.add(new DayRhythmItem(day, titleToDisplay, subtitle, R.drawable.ic_dumbbell, day.equals(todayName), false));
+            }
+        }
+        return rhythmList;
+    }
+
     private void updateMomentumCardUI(String activePlan) {
         int targetWorkouts = 6;
 
@@ -321,6 +350,9 @@ public class MainActivity extends AppCompatActivity {
             targetWorkouts = 3;
         } else if (activePlan.equals("Upper / Lower Split")) {
             targetWorkouts = 4;
+        }
+        else {
+            targetWorkouts = getCustomPlanWorkoutDaysCount(activePlan);
         }
 
         // Set dynamic plan target
@@ -349,6 +381,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private int getCustomPlanWorkoutDaysCount(String planName) {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String[] days = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
+        int workoutDays = 0;
+        for (String day : days) {
+            if (!prefs.getString(planName + "_" + day, "").isEmpty()) {
+                workoutDays++;
+            }
+        }
+        return Math.max(workoutDays, 1);
+    }
+
     private String getCurrentDayName() {
         java.util.Calendar calendar = java.util.Calendar.getInstance();
         int dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK);
@@ -432,8 +477,49 @@ public class MainActivity extends AppCompatActivity {
 
             cardBinding.getRoot().setOnClickListener(v -> handlePlanClick(planName));
 
+            cardBinding.getRoot().setOnLongClickListener(v -> {
+                showDeleteCustomPlanDialog(planName);
+                return true;
+            });
+
             binding.layoutCustomPlansContainer.addView(cardBinding.getRoot());
         }
+    }
+
+    private void showDeleteCustomPlanDialog(String planName) {
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle("Delete Custom Plan?")
+                .setMessage("Are you sure you want to delete '" + planName + "'? This action cannot be undone.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    deleteCustomPlanFromPrefs(planName);
+
+                    if (planName.equals(currentActivePlan)) {
+                        currentActivePlan = "Push / Pull / Legs";
+                        saveSelectedPlan(currentActivePlan);
+                        updatePlanCardsUI(currentActivePlan);
+                    } else {
+                        loadCustomPlanCardsUI();
+                    }
+
+                    Toast.makeText(this, "Custom plan deleted", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteCustomPlanFromPrefs(String planName) {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+        Set<String> customPlans = new HashSet<>(prefs.getStringSet(KEY_CUSTOM_PLANS, new HashSet<>()));
+        customPlans.remove(planName);
+        prefs.edit().putStringSet(KEY_CUSTOM_PLANS, customPlans).apply();
+
+        SharedPreferences.Editor editor = prefs.edit();
+        String[] days = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
+        for (String day : days) {
+            editor.remove(planName + "_" + day);
+        }
+        editor.apply();
     }
 
     private void loadFragment(Fragment fragment) {
