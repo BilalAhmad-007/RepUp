@@ -111,7 +111,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_input_field"
-        android:hint="e.g. Chest &amp; Triceps"
+        android:hint="Enter Day Name (e.g. Chest &amp; Triceps)"
         android:padding="12dp"
         android:textColorHint="#8E8E93"
         android:textColor="@color/text_dark"
