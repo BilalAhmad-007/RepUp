@@ -21,6 +21,7 @@ import com.bilalahmad.repup.database.WorkoutSession;
 import com.bilalahmad.repup.databinding.ActivityMainBinding;
 import com.bilalahmad.repup.dialog.CustomizePlanBottomSheet;
 import com.bilalahmad.repup.databinding.ItemCustomPlanCardBinding;
+import com.bilalahmad.repup.dialog.StartWorkoutBottomSheet;
 import com.bilalahmad.repup.ui.HistoryFragment;
 import com.bilalahmad.repup.ui.MetricsFragment;
 import com.bilalahmad.repup.viewmodel.MainViewModel;
@@ -114,18 +115,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpClickListeners() {
         binding.btnStartWorkout.setOnClickListener(v -> {
-            //Insert test workout session into rdb
-            WorkoutSession sampleWorkout = new WorkoutSession(
-                    "Push day",
-                    "Chest, Shoulders, Triceps",
-                    6,
-                    48,
-                    System.currentTimeMillis()
-            );
-            viewModel.insertWorkout(sampleWorkout);
-
-            Toast.makeText(this, "Workout saved to Room database!", Toast.LENGTH_SHORT).show();
-
+            if (isTodayRestDay()) {
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle("Rest Day")
+                        .setMessage("Today is a rest day. Enjoy your recovery and let your muscles grow!")
+                        .setPositiveButton("OK", null)
+                        .show();
+            } else {
+                StartWorkoutBottomSheet bottomSheet = StartWorkoutBottomSheet.newInstance(currentActivePlan);
+                bottomSheet.show(getSupportFragmentManager(), "StartWorkoutBottomSheet");
+            }
         });
         binding.btnCustomizePlan.setOnClickListener(v -> {
            openCustomizePlanBottomSheet();
@@ -522,6 +521,44 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+
+    private boolean isTodayRestDay() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String activePlan = prefs.getString("ACTIVE_PLAN", "Push / Pull / Legs");
+
+        // Get current day
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        int dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK);
+        String todayKey;
+        switch (dayOfWeek) {
+            case java.util.Calendar.TUESDAY: todayKey = "TUE"; break;
+            case java.util.Calendar.WEDNESDAY: todayKey = "WED"; break;
+            case java.util.Calendar.THURSDAY: todayKey = "THU"; break;
+            case java.util.Calendar.FRIDAY: todayKey = "FRI"; break;
+            case java.util.Calendar.SATURDAY: todayKey = "SAT"; break;
+            case java.util.Calendar.SUNDAY: todayKey = "SUN"; break;
+            case java.util.Calendar.MONDAY:
+            default: todayKey = "MON"; break;
+        }
+
+        String exerciseData = "";
+        if (activePlan.equals("Push / Pull / Legs")) {
+            if (todayKey.equals("MON") || todayKey.equals("THU") ||
+                    todayKey.equals("TUE") || todayKey.equals("FRI") ||
+                    todayKey.equals("WED") || todayKey.equals("SAT")) {
+                return false; // PPL has workouts on these days
+            }
+            return true; // Sunday is rest day
+        } else if (activePlan.equals("Full Body Foundation")) {
+            return !(todayKey.equals("MON") || todayKey.equals("WED") || todayKey.equals("FRI"));
+        } else if (activePlan.equals("Upper / Lower Split")) {
+            return !(todayKey.equals("MON") || todayKey.equals("TUE") || todayKey.equals("THU") || todayKey.equals("FRI"));
+        } else {
+            // Custom plan check
+            exerciseData = prefs.getString(activePlan + "_" + todayKey, "");
+            return exerciseData.isEmpty();
+        }
+    }
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
