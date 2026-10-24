@@ -87,7 +87,7 @@
         android:layout_height="56dp"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/primary_orange"
-        android:text="Save workout · 0 sets ✓"
+        android:text="Save workout ✓"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"
