@@ -110,7 +110,7 @@ public class StartWorkoutBottomSheet extends BottomSheetDialogFragment {
             // Custom plan exercises lookup from SharedPreferences
             exerciseData = prefs.getString(activePlan + "_" + todayKey, "");
         }
-
+//random commit
         if (!exerciseData.isEmpty()) {
             String[] exercises = exerciseData.split(";");
             int index = 1;
