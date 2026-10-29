@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bilalahmad.repup.database.WorkoutSession;
 import com.bilalahmad.repup.databinding.DialogStartWorkoutBinding;
 import com.bilalahmad.repup.databinding.ItemWorkoutExerciseBinding;
 import com.bilalahmad.repup.databinding.ItemWorkoutSetBinding;
@@ -52,7 +53,7 @@ public class StartWorkoutBottomSheet extends BottomSheetDialogFragment {
 
         List<ExerciseItem> exerciseList = loadActiveDayExercises();
 
-        // Fetch custom day title if available, otherwise fallback to "MON Workout"
+
         SharedPreferences prefs = requireContext().getSharedPreferences("RepUpPrefs", Context.MODE_PRIVATE);
         String todayKey = getCurrentDayName();
         String customTitle = prefs.getString(activePlan + "_" + todayKey + "_title", "");
@@ -70,7 +71,43 @@ public class StartWorkoutBottomSheet extends BottomSheetDialogFragment {
         binding.rvWorkoutExercises.setAdapter(adapter);
 
         binding.btnSaveWorkout.setOnClickListener(v -> {
-            // TODO: Save workout session logic
+
+            int totalExercisesRecorded = exerciseList.size();
+            int totalSetsRecorded = 0;
+
+            for (ExerciseItem item : exerciseList) {
+                for (String rep : item.sets) {
+                    if (!rep.trim().isEmpty()) {
+                        totalSetsRecorded++;
+                    }
+                }
+            }
+
+            if (totalSetsRecorded == 0) {
+                android.widget.Toast.makeText(requireContext(), "Please enter reps for at least one set", android.widget.Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            com.bilalahmad.repup.viewmodel.MainViewModel viewModel = new androidx.lifecycle.ViewModelProvider(requireActivity()).get(com.bilalahmad.repup.viewmodel.MainViewModel.class);
+
+
+            String workoutTitle = binding.tvWorkoutTitle.getText().toString();
+            String muscleGroup = activePlan;
+            int estimatedDuration = exerciseList.size() * 8;
+            long timestamp = System.currentTimeMillis();
+
+
+            WorkoutSession session = new WorkoutSession(
+                    workoutTitle,
+                    muscleGroup,
+                    totalExercisesRecorded,
+                    estimatedDuration,
+                    timestamp
+            );
+
+            viewModel.insertWorkout(session);
+
+            android.widget.Toast.makeText(requireContext(), "Workout saved successfully!", android.widget.Toast.LENGTH_SHORT).show();
             dismiss();
         });
     }
@@ -85,7 +122,7 @@ public class StartWorkoutBottomSheet extends BottomSheetDialogFragment {
 
         String exerciseData = "";
 
-        // REMOVED local 'String activePlan = ...' line so it uses the passed activePlan!
+
         if (activePlan.equals("Push / Pull / Legs")) {
             if (!todayKey.equals("SUN")) {
                 if (todayKey.equals("MON") || todayKey.equals("THU")) {
@@ -107,7 +144,7 @@ public class StartWorkoutBottomSheet extends BottomSheetDialogFragment {
                 exerciseData = "Squat;Deadlift;Leg curl;Calf raise";
             }
         } else {
-            // Custom plan exercises lookup from SharedPreferences
+
             exerciseData = prefs.getString(activePlan + "_" + todayKey, "");
         }
         if (!exerciseData.isEmpty()) {
