@@ -71,7 +71,7 @@ public class StartWorkoutBottomSheet extends BottomSheetDialogFragment {
         binding.rvWorkoutExercises.setAdapter(adapter);
 
         binding.btnSaveWorkout.setOnClickListener(v -> {
-            //hold work one more day
+            //will do tmrw
             int totalExercisesRecorded = exerciseList.size();
             int totalSetsRecorded = 0;
 
